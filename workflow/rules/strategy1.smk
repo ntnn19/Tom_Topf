@@ -1,3 +1,5 @@
+import os
+
 proteins = {
     "hsv-1/gD": "P57083",
     "hsv-1/gH": "P08356",
@@ -6,10 +8,25 @@ proteins = {
 QUERY_PROTEINS = list(proteins.keys())
 MULTIFASTA_NAME = "_".join([p.split("/")[-1] for p  in QUERY_PROTEINS])
 MULTIFASTA_OUTPUT = "data/hsv-1/"+MULTIFASTA_NAME+".fa"
+DATA_DIR = "data"
+RESULTS_DIR = "results"
+
 rule all:
     input:
         expand("data/{protein}.fa", protein=QUERY_PROTEINS),
         MULTIFASTA_OUTPUT,
+
+rule create_data_dir:
+    output:
+        directory(DATA_DIR)
+    run:
+        os.makedirs(DATA_DIR, exist_ok=True)
+
+rule create_results_dir:
+    output:
+        directory(RESULTS_DIR)
+    run:
+        os.makedirs(RESULTS_DIR, exist_ok=True)
 
 rule fetch_seqs:
     output:
