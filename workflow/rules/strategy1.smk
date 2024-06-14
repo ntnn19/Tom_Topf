@@ -1,5 +1,8 @@
 import os
+#configfile: "config.yaml"
 configfile: "config/config.yaml"
+#configfile: "workflow/config/config.yaml"
+
 proteins = {
     "hsv-1/gD": "P57083",
     "hsv-1/gH": "P08356",
@@ -48,8 +51,9 @@ rule CREATE_MULTISEQ_FASTA:
         MULTIFASTA_OUTPUT
     shell:
         """
-        python {input} {output}
+        python "{config[scripts_dir]}/create_multiseq_fasta.py" {input} {output}
         """
 
 # rule colabfold_search:
 # rule colabfold_batch:
+
