@@ -1,0 +1,17 @@
+from snakemake.utils import min_version
+min_version("6.0")
+
+configfile: "config/config.yaml"
+RULES_DIR=config["rules"]
+
+module strat1:
+    snakefile:
+        RULES_DIR+"/strategy1.smk"
+
+use rule * from strat1
+
+# Define a new default target that collects all the targets from the dna_seq and rna_seq module.
+rule all:
+    input:
+        rules.prepare_data.input,
+    default_target: True

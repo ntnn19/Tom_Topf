@@ -1,36 +1,37 @@
 import os
-
+configfile: "config/config.yaml"
 proteins = {
     "hsv-1/gD": "P57083",
     "hsv-1/gH": "P08356",
     "hsv-1/gL": "P28278",
 }
+
+DATA_DIR = config["data_dir"]
+RESULTS_DIR = config["output_dir"]
 QUERY_PROTEINS = list(proteins.keys())
 MULTIFASTA_NAME = "_".join([p.split("/")[-1] for p  in QUERY_PROTEINS])
-MULTIFASTA_OUTPUT = "data/hsv-1/"+MULTIFASTA_NAME+".fa"
-DATA_DIR = "data"
-RESULTS_DIR = "results"
+MULTIFASTA_OUTPUT = DATA_DIR+"/hsv-1/multi/"+MULTIFASTA_NAME+".fa"
 
-rule all:
+rule prepare_data:
     input:
-        expand("data/{protein}.fa", protein=QUERY_PROTEINS),
+        expand(DATA_DIR+"/{protein}.fa", protein=QUERY_PROTEINS),
         MULTIFASTA_OUTPUT,
 
-rule create_data_dir:
+rule CREATE_DATA_DIR:
     output:
         directory(DATA_DIR)
     run:
         os.makedirs(DATA_DIR, exist_ok=True)
 
-rule create_results_dir:
+rule CREATE_RESULTS_DIR:
     output:
         directory(RESULTS_DIR)
     run:
         os.makedirs(RESULTS_DIR, exist_ok=True)
 
-rule fetch_seqs:
+rule FETCH_SEQS:
     output:
-        "data/{protein}.fa"
+        DATA_DIR+"/{protein}.fa"
     params:
         url=lambda wildcards: f"https://rest.uniprot.org/uniprotkb/{proteins[wildcards.protein]}.fasta"
     shell:
@@ -40,15 +41,14 @@ rule fetch_seqs:
         """
 
 
-rule create_multiseq_fasta:
+rule CREATE_MULTISEQ_FASTA:
     input:
-        "data/{protein}.fa"
+        expand(DATA_DIR+"/{protein}.fa",protein=QUERY_PROTEINS)
     output:
         MULTIFASTA_OUTPUT
     shell:
         """
-        echo >{MULTIFASTA_NAME} > {output}
-        cat {input} > {output}
+        python {input} {output}
         """
 
 # rule colabfold_search:

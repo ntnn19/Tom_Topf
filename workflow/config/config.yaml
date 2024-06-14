@@ -1,0 +1,6 @@
+rules_dir: rules
+output_dir: results
+data_dir: data
+#rules_dir: workflow/rules
+#output_dir: workflow/results
+#data_dir: workflow/data
