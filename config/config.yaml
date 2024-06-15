@@ -5,3 +5,4 @@ rules_dir: workflow/rules
 output_dir: workflow/results
 data_dir: workflow/data
 scripts_dir: workflow/scripts
+containers_dir: /home/nnagar/singularity_containers

@@ -11,6 +11,7 @@ proteins = {
 
 DATA_DIR = config["data_dir"]
 RESULTS_DIR = config["output_dir"]
+CONTAINERS_DIR = config["containers_dir"]
 QUERY_PROTEINS = list(proteins.keys())
 MULTIFASTA_NAME = "_".join([p.split("/")[-1] for p  in QUERY_PROTEINS])
 MULTIFASTA_OUTPUT = DATA_DIR+"/hsv-1/multi/"+MULTIFASTA_NAME+".fa"
@@ -20,17 +21,17 @@ rule prepare_data:
         expand(DATA_DIR+"/{protein}.fa", protein=QUERY_PROTEINS),
         MULTIFASTA_OUTPUT,
 
-rule CREATE_DATA_DIR:
-    output:
-        directory(DATA_DIR)
-    run:
-        os.makedirs(DATA_DIR, exist_ok=True)
-
-rule CREATE_RESULTS_DIR:
-    output:
-        directory(RESULTS_DIR)
-    run:
-        os.makedirs(RESULTS_DIR, exist_ok=True)
+# rule CREATE_DATA_DIR:
+#     output:
+#         directory(DATA_DIR)
+#     run:
+#         os.makedirs(DATA_DIR, exist_ok=True)
+#
+# rule CREATE_RESULTS_DIR:
+#     output:
+#         directory(RESULTS_DIR)
+#     run:
+#         os.makedirs(RESULTS_DIR, exist_ok=True)
 
 rule FETCH_SEQS:
     output:
@@ -54,6 +55,18 @@ rule CREATE_MULTISEQ_FASTA:
         python "{config[scripts_dir]}/create_multiseq_fasta.py" {input} {output}
         """
 
-# rule colabfold_search:
-# rule colabfold_batch:
+# rule RUN_COLABFOLD_SEARCH:
+#     input:
+#         MULTIFASTA_OUTPUT
+#     output:
+#
+#     container:
+#         CONTAINERS_DIR+"/colabfold/colabfold_1.5.5-cuda12.2.2.sif"
+#     shell:
+#         """
+#         colabfold_search {input}
+#         """
+#
+
+# rule RUN_COLABFOLD_BATCH:
 
