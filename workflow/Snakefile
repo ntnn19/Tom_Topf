@@ -8,4 +8,4 @@ include: "rules/strategy1.smk"
 
 rule all:
     input:
-        MULTIFASTA_OUTPUT
+        RESULTS_DIR+"/" + MULTIFASTA_NAME + ".a3m"

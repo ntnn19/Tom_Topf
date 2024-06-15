@@ -15,24 +15,12 @@ CONTAINERS_DIR = config["containers_dir"]
 QUERY_PROTEINS = list(proteins.keys())
 MULTIFASTA_NAME = "_".join([p.split("/")[-1] for p  in QUERY_PROTEINS])
 MULTIFASTA_OUTPUT = DATA_DIR+"/hsv-1/multi/"+MULTIFASTA_NAME+".fa"
-
 rule prepare_data:
     input:
         expand(DATA_DIR+"/{protein}.fa", protein=QUERY_PROTEINS),
         MULTIFASTA_OUTPUT,
         RESULTS_DIR+"/" + MULTIFASTA_NAME + ".a3m"
 
-# rule CREATE_DATA_DIR:
-#     output:
-#         directory(DATA_DIR)
-#     run:
-#         os.makedirs(DATA_DIR, exist_ok=True)
-#
-# rule CREATE_RESULTS_DIR:
-#     output:
-#         directory(RESULTS_DIR)
-#     run:
-#         os.makedirs(RESULTS_DIR, exist_ok=True)
 
 rule FETCH_SEQS:
     output:
