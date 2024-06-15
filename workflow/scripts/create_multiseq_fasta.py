@@ -22,7 +22,7 @@ def main(input, out):
                 seq_list.append(str(seq_dict[list(seq_dict.keys())[0]].seq))
                 header_list.append(list(seq_dict.keys())[0])
         with open(out, 'w') as outfile:
-            outfile.write(">"+'_'.join(header_list)+'\n'+":".join(seq_list))
+            outfile.write(">"+os.path.split(out)[-1].split(".")[0]+'\n'+":".join(seq_list))
 
 
 

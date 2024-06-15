@@ -55,17 +55,17 @@ rule CREATE_MULTISEQ_FASTA:
         python "{config[scripts_dir]}/create_multiseq_fasta.py" {input} {output}
         """
 
-# rule RUN_COLABFOLD_SEARCH:
-#     input:
-#         MULTIFASTA_OUTPUT
-#     output:
-#
-#     container:
-#         CONTAINERS_DIR+"/colabfold/colabfold_1.5.5-cuda12.2.2.sif"
-#     shell:
-#         """
-#         colabfold_search {input}
-#         """
+rule RUN_COLABFOLD_SEARCH:
+    input:
+        MULTIFASTA_OUTPUT
+    output:
+        RESULTS_DIR+"/"+MULTIFASTA_NAME+".a3m"
+    container:
+        CONTAINERS_DIR+"/colabfold/colabfold_1.5.5-cuda12.2.2.sif"
+    shell:
+        """
+        colabfold_batch {input} /predictions --msa-only 
+        """
 #
 
 # rule RUN_COLABFOLD_BATCH:
