@@ -20,6 +20,7 @@ rule prepare_data:
     input:
         expand(DATA_DIR+"/{protein}.fa", protein=QUERY_PROTEINS),
         MULTIFASTA_OUTPUT,
+        RESULTS_DIR+"/" + MULTIFASTA_NAME + ".a3m"
 
 # rule CREATE_DATA_DIR:
 #     output:
