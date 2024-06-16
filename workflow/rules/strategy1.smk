@@ -28,7 +28,7 @@ rule prepare_data:
         MULTIFASTA_ALN_OUTPUT,
         expand(RESULTS_DIR +
            "/hsv-1/multi/" + MULTIFASTA_NAME +
-           "_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000_{msa_depth}.pdb", rank=AF_MODEL_RANK, model=AF_MODEL, msa_depth=MAX_DEPTH)
+           "_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb", rank=AF_MODEL_RANK, model=AF_MODEL, msa_depth=MAX_DEPTH_FILENAME)
 
 
 rule FETCH_SEQS:
