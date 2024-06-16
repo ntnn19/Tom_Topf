@@ -51,9 +51,9 @@ rule CREATE_MULTISEQ_FASTA:
         MULTIFASTA_OUTPUT
     shell:
         """
-        # python "{config[scripts_dir]}/create_multiseq_fasta.py" {input} {output}
         python "{config[scripts_dir]}/create_multiseq_fasta_test.py" {input} {output}
         """
+        # python "{config[scripts_dir]}/create_multiseq_fasta.py" {input} {output}
 
 rule RUN_COLABFOLD_SEARCH:
     input:
@@ -81,7 +81,6 @@ rule CREATE_DECOY_A3M:
 
 rule RUN_COLABFOLD_BATCH:
     input:
-
         MULTIFASTA_ALN_DECOY_OUTPUT
         # a3m_1 =  MULTIFASTA_ALN_DECOY_OUTPUT[0],
         # a3m_2 =  MULTIFASTA_ALN_DECOY_OUTPUT[1],
@@ -89,7 +88,6 @@ rule RUN_COLABFOLD_BATCH:
         # a3m_4 =  MULTIFASTA_ALN_DECOY_OUTPUT[3],
         # a3m_5 =  MULTIFASTA_ALN_DECOY_OUTPUT[4]
     params:
-
         MAX_DEPTH_PARAM
         # d1=MAX_DEPTH[0].replace("_",":"),
         # d2=MAX_DEPTH[1].replace("_",":"),
@@ -97,7 +95,6 @@ rule RUN_COLABFOLD_BATCH:
         # d4=MAX_DEPTH[3].replace("_",":"),
         # d5=MAX_DEPTH[4].replace("_",":")
     output:
-# gD_gH_gL_unrelaxed_rank_001_alphafold2_multimer_v3_model_2_seed_000.pdb
         expand(RESULTS_DIR +
                "/hsv-1/multi/" + MULTIFASTA_NAME+
                "_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb",rank=AF_MODEL_RANK,model=AF_MODEL, msa_depth=MAX_DEPTH)
