@@ -1,5 +1,3 @@
-import os
-
 configfile: "config/config.yaml"
 
 PROTEINS = {
