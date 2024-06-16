@@ -1,1 +1,2 @@
 create a fasta file for each max_msa value. remember to include max_msa value in filename and header
+refactor such that each the results of each strategy are stored in "results/strartegy_1", "results/strartegy_2", etc.

@@ -14,12 +14,12 @@ RESULTS_DIR = config["output_dir"]
 CONTAINERS_DIR = config["containers_dir"]
 QUERY_PROTEINS = list(PROTEINS.keys())
 MULTIFASTA_NAME = "_".join([p.split("/")[-1] for p  in QUERY_PROTEINS])
-MULTIFASTA_OUTPUT = DATA_DIR+"/hsv-1/multi/"+MULTIFASTA_NAME+".fa"
-MULTIFASTA_ALN_OUTPUT = RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME + ".a3m"
 MAX_DEPTH= ["16_32", "32_64", "64_128", "256_512", "512_1024"]
 AF_MODEL= ["1","2","3","4","5"]
 AF_MODEL_RANK= ["001","002","003","004","005"]
-
+MULTIFASTA_OUTPUT = DATA_DIR+"/hsv-1/multi/"+MULTIFASTA_NAME+".fa"
+MULTIFASTA_ALN_OUTPUT = RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME + ".a3m"
+MULTIFASTA_ALN_DECOY_OUTPUT = [RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME+"_"+max_depth + ".a3m" for max_depth in MAX_DEPTH]
 rule prepare_data:
     input:
         expand(DATA_DIR+"/{protein}.fa", protein=QUERY_PROTEINS),
@@ -66,10 +66,18 @@ rule RUN_COLABFOLD_SEARCH:
         colabfold_batch {input} /predictions --msa-only
         """
 #
+rule CREATE_DECOY_A3M:
+    input:
+        MULTIFASTA_ALN_OUTPUT
+    output:
+        MULTIFASTA_ALN_DECOY_OUTPUT
+    run:
+        shell(f"""src_file="{MULTIFASTA_ALN_OUTPUT}"; dest_files=({" ".join(f'"{dest}"' for dest in MULTIFASTA_ALN_DECOY_OUTPUT)}); printf "%s\\0" "${{dest_files[@]}}" | xargs -0 -I {{}} cp "$src_file" {{}}""")
+
 
 rule RUN_COLABFOLD_BATCH:
     input:
-        MULTIFASTA_ALN_OUTPUT
+        MULTIFASTA_ALN_DECOY_OUTPUT
     params:
         d1=MAX_DEPTH[0].replace("_",":"),
         d2=MAX_DEPTH[1].replace("_",":"),
