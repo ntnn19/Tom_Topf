@@ -2,7 +2,7 @@
 #output_dir: results
 #data_dir: data
 rules_dir: workflow/rules
-output_dir: workflow/results/hsv-1/multi
+strategy_1_output_dir: workflow/results/strategy-1/hsv-1/multi
 data_dir: workflow/data
 scripts_dir: workflow/scripts
 containers_dir: /home/nnagar/singularity_containers

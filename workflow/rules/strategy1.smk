@@ -7,7 +7,7 @@ PROTEINS = {
 }
 
 DATA_DIR = config["data_dir"]
-RESULTS_DIR = config["output_dir"]
+RESULTS_DIR = config["strategy_1_output_dir"]
 CONTAINERS_DIR = config["containers_dir"]
 QUERY_PROTEINS = list(PROTEINS.keys())
 MULTIFASTA_NAME = "_".join([p.split("/")[-1] for p in QUERY_PROTEINS])
