@@ -14,12 +14,13 @@ RESULTS_DIR = config["output_dir"]
 CONTAINERS_DIR = config["containers_dir"]
 QUERY_PROTEINS = list(PROTEINS.keys())
 MULTIFASTA_NAME = "_".join([p.split("/")[-1] for p  in QUERY_PROTEINS])
-MAX_DEPTH= ["16_32", "32_64", "64_128", "256_512", "512_1024"]
+MAX_DEPTH_FILENAME= ["16_32", "32_64", "64_128", "256_512", "512_1024"]
+MAX_DEPTH_PARAM= [i.replace("_",":") for i in MAX_DEPTH_FILENAME]
 AF_MODEL= ["1","2","3","4","5"]
 AF_MODEL_RANK= ["001","002","003","004","005"]
 MULTIFASTA_OUTPUT = DATA_DIR+"/hsv-1/multi/"+MULTIFASTA_NAME+".fa"
 MULTIFASTA_ALN_OUTPUT = RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME + ".a3m"
-MULTIFASTA_ALN_DECOY_OUTPUT = [RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME+"_"+max_depth + ".a3m" for max_depth in MAX_DEPTH]
+MULTIFASTA_ALN_DECOY_OUTPUT = [RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME+"_"+max_depth + ".a3m" for max_depth in MAX_DEPTH_FILENAME]
 rule prepare_data:
     input:
         expand(DATA_DIR+"/{protein}.fa", protein=QUERY_PROTEINS),
@@ -71,34 +72,51 @@ rule CREATE_DECOY_A3M:
         MULTIFASTA_ALN_OUTPUT
     output:
         MULTIFASTA_ALN_DECOY_OUTPUT
-    run:
-        shell(f"""src_file="{MULTIFASTA_ALN_OUTPUT}"; dest_files=({" ".join(f'"{dest}"' for dest in MULTIFASTA_ALN_DECOY_OUTPUT)}); printf "%s\\0" "${{dest_files[@]}}" | xargs -0 -I {{}} cp "$src_file" {{}}""")
+    shell:
+        """
+        for dest in {output}; do cp {input} "$dest"; done
+        """
+
 
 
 rule RUN_COLABFOLD_BATCH:
     input:
+
         MULTIFASTA_ALN_DECOY_OUTPUT
+        # a3m_1 =  MULTIFASTA_ALN_DECOY_OUTPUT[0],
+        # a3m_2 =  MULTIFASTA_ALN_DECOY_OUTPUT[1],
+        # a3m_3 =  MULTIFASTA_ALN_DECOY_OUTPUT[2],
+        # a3m_4 =  MULTIFASTA_ALN_DECOY_OUTPUT[3],
+        # a3m_5 =  MULTIFASTA_ALN_DECOY_OUTPUT[4]
     params:
-        d1=MAX_DEPTH[0].replace("_",":"),
-        d2=MAX_DEPTH[1].replace("_",":"),
-        d3=MAX_DEPTH[2].replace("_",":"),
-        d4=MAX_DEPTH[3].replace("_",":"),
-        d5=MAX_DEPTH[4].replace("_",":")
+
+        MAX_DEPTH_PARAM
+        # d1=MAX_DEPTH[0].replace("_",":"),
+        # d2=MAX_DEPTH[1].replace("_",":"),
+        # d3=MAX_DEPTH[2].replace("_",":"),
+        # d4=MAX_DEPTH[3].replace("_",":"),
+        # d5=MAX_DEPTH[4].replace("_",":")
     output:
 # gD_gH_gL_unrelaxed_rank_001_alphafold2_multimer_v3_model_2_seed_000.pdb
         expand(RESULTS_DIR +
                "/hsv-1/multi/" + MULTIFASTA_NAME+
-               "_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000_{msa_depth}.pdb",rank=AF_MODEL_RANK,model=AF_MODEL, msa_depth=MAX_DEPTH)
+               "_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb",rank=AF_MODEL_RANK,model=AF_MODEL, msa_depth=MAX_DEPTH)
     container:
         CONTAINERS_DIR+"/colabfold/colabfold_1.5.5-cuda12.2.2.sif"
     shell:
         """
-        colabfold_batch {input} /predictions --max-msa {params.d1}
-        colabfold_batch {input} /predictions --max-msa {params.d2}
-        colabfold_batch {input} /predictions --max-msa {params.d3}
-        colabfold_batch {input} /predictions --max-msa {params.d4}
-        colabfold_batch {input} /predictions --max-msa {params.d5}
+        for i in !{input}; do
+          input_a3m="${input[$i]}"
+          max_msa="${params[$i]}"
+          colabfold_batch {input_a3m} /predictions --max-msa {max_msa}
         """
+        # done
+        # # colabfold_batch {a3m_1} /predictions --max-msa {params.d1}
+        # # colabfold_batch {a3m_2} /predictions --max-msa {params.d2}
+        # # colabfold_batch {a3m_3} /predictions --max-msa {params.d3}
+        # # colabfold_batch {a3m_4} /predictions --max-msa {params.d4}
+        # # colabfold_batch {a3m_5} /predictions --max-msa {params.d5}
+        # """
 
 
 
