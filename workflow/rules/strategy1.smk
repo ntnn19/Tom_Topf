@@ -103,11 +103,10 @@ rule RUN_COLABFOLD_BATCH:
     shell:
         """
         input_files=({input})
-        for i in "${!input_files[@]}"; do
-          echo "${input_files[$i]}"
-          done
-        """
-          # echo $i;
+        for idx in "${{!input[@]}}"; do
+            file=${{input[$idx]}}
+        done
+        """  # echo $i;
 #     input_a3m="${input[$i]}"
 #     max_msa="${params[$i]}"
 #
