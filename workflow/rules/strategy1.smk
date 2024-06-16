@@ -102,8 +102,9 @@ rule RUN_COLABFOLD_BATCH:
         CONTAINERS_DIR+"/colabfold/colabfold_1.5.5-cuda12.2.2.sif"
     shell:
         """
-        for i in !{input}; do
-          echo "${input[$i]}"
+        input_files=({input})
+        for i in "${!input_files[@]}"; do
+          echo "${input_files[$i]}"
           done
         """
           # echo $i;
