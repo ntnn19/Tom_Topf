@@ -1,0 +1,1 @@
+create a fasta file for each max_msa value. remember to include max_msa value in filename and header
