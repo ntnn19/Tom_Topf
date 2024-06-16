@@ -21,6 +21,7 @@ AF_MODEL_RANK= ["001","002","003","004","005"]
 MULTIFASTA_OUTPUT = DATA_DIR+"/hsv-1/multi/"+MULTIFASTA_NAME+".fa"
 MULTIFASTA_ALN_OUTPUT = RESULTS_DIR+"/"+ MULTIFASTA_NAME + ".a3m"
 MULTIFASTA_ALN_DECOY_OUTPUT = [RESULTS_DIR+"/" + MULTIFASTA_NAME+"_"+max_depth + ".a3m" for max_depth in MAX_DEPTH_FILENAME]
+MULTIFASTA_ALN_DECOY_PARAMS = [DATA_DIR+"/hsv-1/multi/"+max_depth for max_depth in MAX_DEPTH_FILENAME]
 #MULTIFASTA_ALN_OUTPUT = RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME + ".a3m"
 #MULTIFASTA_ALN_DECOY_OUTPUT = [RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME+"_"+max_depth + ".a3m" for max_depth in MAX_DEPTH_FILENAME]
 rule prepare_data:
@@ -28,6 +29,7 @@ rule prepare_data:
         expand(DATA_DIR+"/{protein}.fa", protein=QUERY_PROTEINS),
         MULTIFASTA_OUTPUT,
         MULTIFASTA_ALN_OUTPUT,
+        expand(DATA_DIR + "/hsv-1/multi/{p}", p=MAX_DEPTH_FILENAME),
         expand(RESULTS_DIR +
            "/hsv-1/multi/" + MULTIFASTA_NAME +
            "_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb", rank=AF_MODEL_RANK, model=AF_MODEL, msa_depth=MAX_DEPTH_FILENAME)
@@ -79,8 +81,14 @@ rule CREATE_DECOY_A3M:
         for dest in {output}; do cp {input} "$dest"; done
         """
 
-
-
+rule CREATE_DECOY_MAX_DEPTH_PARAM:
+    output:
+        MULTIFASTA_ALN_DECOY_PARAMS
+    shell:
+        """
+        outdir=$(dirname {MULTIFASTA_OUTPUT})
+        touch {output}
+        """
 rule RUN_COLABFOLD_BATCH:
     input:
         MULTIFASTA_ALN_DECOY_OUTPUT
@@ -90,7 +98,7 @@ rule RUN_COLABFOLD_BATCH:
         # a3m_4 =  MULTIFASTA_ALN_DECOY_OUTPUT[3],
         # a3m_5 =  MULTIFASTA_ALN_DECOY_OUTPUT[4]
     params:
-        MAX_DEPTH_PARAM
+        MULTIFASTA_ALN_DECOY_PARAMS
         # d1=MAX_DEPTH[0].replace("_",":"),
         # d2=MAX_DEPTH[1].replace("_",":"),
         # d3=MAX_DEPTH[2].replace("_",":"),
