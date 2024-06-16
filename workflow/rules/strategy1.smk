@@ -103,11 +103,10 @@ rule RUN_COLABFOLD_BATCH:
     shell:
         """
         for i in !{input}; do
-        
-          echo $i;
-          
+          echo "${input[$i]}"
           done
         """
+          # echo $i;
 #     input_a3m="${input[$i]}"
 #     max_msa="${params[$i]}"
 #
