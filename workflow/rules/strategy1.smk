@@ -16,9 +16,10 @@ QUERY_PROTEINS = list(PROTEINS.keys())
 MULTIFASTA_NAME = "_".join([p.split("/")[-1] for p  in QUERY_PROTEINS])
 MULTIFASTA_OUTPUT = DATA_DIR+"/hsv-1/multi/"+MULTIFASTA_NAME+".fa"
 MULTIFASTA_ALN_OUTPUT = RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME + ".a3m"
-MAX_DEPTH= ["16:32", "32:64", "64:128", "256:512", "512:1024"]
+MAX_DEPTH= ["16_32", "32_64", "64_128", "256_512", "512_1024"]
 AF_MODEL= ["1","2","3","4","5"]
 AF_MODEL_RANK= ["001","002","003","004","005"]
+
 rule prepare_data:
     input:
         expand(DATA_DIR+"/{protein}.fa", protein=QUERY_PROTEINS),
@@ -62,7 +63,7 @@ rule RUN_COLABFOLD_SEARCH:
         CONTAINERS_DIR+"/colabfold/colabfold_1.5.5-cuda12.2.2.sif"
     shell:
         """
-        colabfold_batch {input} /predictions --msa-only 
+        colabfold_batch {input} /predictions --msa-only
         """
 #
 
@@ -70,12 +71,11 @@ rule RUN_COLABFOLD_BATCH:
     input:
         MULTIFASTA_ALN_OUTPUT
     params:
-
-        d1=MAX_DEPTH[0],
-        d2=MAX_DEPTH[1],
-        d3=MAX_DEPTH[2],
-        d4=MAX_DEPTH[3],
-        d5=MAX_DEPTH[4]
+        d1=MAX_DEPTH[0].replace("_",":"),
+        d2=MAX_DEPTH[1].replace("_",":"),
+        d3=MAX_DEPTH[2].replace("_",":"),
+        d4=MAX_DEPTH[3].replace("_",":"),
+        d5=MAX_DEPTH[4].replace("_",":")
     output:
 # gD_gH_gL_unrelaxed_rank_001_alphafold2_multimer_v3_model_2_seed_000.pdb
         expand(RESULTS_DIR +
@@ -91,3 +91,9 @@ rule RUN_COLABFOLD_BATCH:
         colabfold_batch {input} /predictions --max-msa {params.d4}
         colabfold_batch {input} /predictions --max-msa {params.d5}
         """
+
+
+
+
+
+
