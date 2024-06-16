@@ -29,7 +29,6 @@ rule prepare_data:
         expand(DATA_DIR+"/{protein}.fa", protein=QUERY_PROTEINS),
         MULTIFASTA_OUTPUT,
         MULTIFASTA_ALN_OUTPUT,
-        expand(DATA_DIR + "/hsv-1/multi/{p}", p=MAX_DEPTH_FILENAME),
         expand(RESULTS_DIR +
            "/hsv-1/multi/" + MULTIFASTA_NAME +
            "_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb", rank=AF_MODEL_RANK, model=AF_MODEL, msa_depth=MAX_DEPTH_FILENAME)
