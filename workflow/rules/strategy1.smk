@@ -1,4 +1,4 @@
-import os
+ import os
 #configfile: "config.yaml"
 configfile: "config/config.yaml"
 #configfile: "workflow/config/config.yaml"
@@ -19,8 +19,10 @@ MAX_DEPTH_PARAM= [i.replace("_",":") for i in MAX_DEPTH_FILENAME]
 AF_MODEL= ["1","2","3","4","5"]
 AF_MODEL_RANK= ["001","002","003","004","005"]
 MULTIFASTA_OUTPUT = DATA_DIR+"/hsv-1/multi/"+MULTIFASTA_NAME+".fa"
-MULTIFASTA_ALN_OUTPUT = RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME + ".a3m"
-MULTIFASTA_ALN_DECOY_OUTPUT = [RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME+"_"+max_depth + ".a3m" for max_depth in MAX_DEPTH_FILENAME]
+MULTIFASTA_ALN_OUTPUT = RESULTS_DIR+"/"+ MULTIFASTA_NAME + ".a3m"
+MULTIFASTA_ALN_DECOY_OUTPUT = [RESULTS_DIR+"/" + MULTIFASTA_NAME+"_"+max_depth + ".a3m" for max_depth in MAX_DEPTH_FILENAME]
+#MULTIFASTA_ALN_OUTPUT = RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME + ".a3m"
+#MULTIFASTA_ALN_DECOY_OUTPUT = [RESULTS_DIR+"/hsv-1/multi/" + MULTIFASTA_NAME+"_"+max_depth + ".a3m" for max_depth in MAX_DEPTH_FILENAME]
 rule prepare_data:
     input:
         expand(DATA_DIR+"/{protein}.fa", protein=QUERY_PROTEINS),
@@ -122,9 +124,6 @@ rule RUN_COLABFOLD_BATCH:
         # # colabfold_batch {a3m_4} /predictions --max-msa {params.d4}
         # # colabfold_batch {a3m_5} /predictions --max-msa {params.d5}
         # """
-
-
-
 
 
 
