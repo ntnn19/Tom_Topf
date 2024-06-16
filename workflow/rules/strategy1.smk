@@ -12,7 +12,6 @@ CONTAINERS_DIR = config["containers_dir"]
 QUERY_PROTEINS = list(PROTEINS.keys())
 MULTIFASTA_NAME = "_".join([p.split("/")[-1] for p in QUERY_PROTEINS])
 MAX_DEPTH_FILENAME = ["16_32", "32_64", "64_128", "256_512", "512_1024"]
-MAX_DEPTH_PARAM = [i.replace("_",":") for i in MAX_DEPTH_FILENAME]
 AF_MODEL = ["1", "2", "3", "4", "5"]
 AF_MODEL_RANK = ["001", "002", "003", "004", "005"]
 MULTIFASTA_OUTPUT = DATA_DIR + "/hsv-1/multi/" + MULTIFASTA_NAME + ".fa"
