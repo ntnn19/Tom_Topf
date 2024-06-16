@@ -26,8 +26,8 @@ graph LR;
 #### Strategy #2 - Variable MSA depth using colabfold_search
 ```mermaid
 graph LR;
-    gH/gL/gD_multi_sequence_fasta --> id1["colabfold_search
-    max_msa = 16:32, 32:64, 64:128, 256:512, 512:1024"] --> colabfold_batch --> Output;
+    gH/gL/gD_multi_sequence_fasta --> id1["colabfold_search"] --> id2["colabfold_batch
+    max_msa = 16:32, 32:64, 64:128, 256:512, 512:1024"] --> Output;
 ```
 #### Strategy #3 - MSAs using WGS sequences at various levels of the taxonomic hierarchy
 ```mermaid
