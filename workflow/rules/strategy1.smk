@@ -7,7 +7,7 @@ PROTEINS = {
 }
 
 DATA_DIR = config["data_dir"]
-RESULTS_DIR = config["strategy_1_output_dir"]
+STG_1_RESULTS_DIR = config["output_dir"].split(",")[0]
 CONTAINERS_DIR = config["containers_dir"]
 QUERY_PROTEINS = list(PROTEINS.keys())
 MULTIFASTA_NAME = "_".join([p.split("/")[-1] for p in QUERY_PROTEINS])
@@ -15,8 +15,8 @@ MAX_DEPTH_FILENAME = ["16_32", "32_64", "64_128", "256_512", "512_1024"]
 AF_MODEL = ["1", "2", "3", "4", "5"]
 AF_MODEL_RANK = ["001", "002", "003", "004", "005"]
 MULTIFASTA_OUTPUT = DATA_DIR + "/hsv-1/multi/" + MULTIFASTA_NAME + ".fa"
-MULTIFASTA_ALN_OUTPUT = RESULTS_DIR + "/" + MULTIFASTA_NAME + ".a3m"
-MULTIFASTA_ALN_DECOY_OUTPUT = [RESULTS_DIR + "/" + MULTIFASTA_NAME + "_" + max_depth + ".a3m" for max_depth in
+MULTIFASTA_ALN_OUTPUT = STG_1_RESULTS_DIR + "/" + MULTIFASTA_NAME + ".a3m"
+MULTIFASTA_ALN_DECOY_OUTPUT = [STG_1_RESULTS_DIR + "/" + MULTIFASTA_NAME + "_" + max_depth + ".a3m" for max_depth in
                                MAX_DEPTH_FILENAME]
 
 rule prepare_data:
@@ -24,7 +24,7 @@ rule prepare_data:
         expand(DATA_DIR + "/{protein}.fa",protein=QUERY_PROTEINS),
         MULTIFASTA_OUTPUT,
         MULTIFASTA_ALN_OUTPUT,
-        expand(RESULTS_DIR +
+        expand(STG_1_RESULTS_DIR +
                "/hsv-1/multi/" + MULTIFASTA_NAME +
                "_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb",rank=AF_MODEL_RANK,model=AF_MODEL,msa_depth=MAX_DEPTH_FILENAME)
 
@@ -81,7 +81,7 @@ rule RUN_COLABFOLD_BATCH:
     input:
         MULTIFASTA_ALN_DECOY_OUTPUT,
     output:
-        expand(RESULTS_DIR +
+        expand(STG_1_RESULTS_DIR +
                "/hsv-1/multi/" + MULTIFASTA_NAME +
                "_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb",rank=AF_MODEL_RANK,model=AF_MODEL,msa_depth=MAX_DEPTH_FILENAME)
     container:

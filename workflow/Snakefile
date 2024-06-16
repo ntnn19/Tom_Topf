@@ -8,5 +8,5 @@ include: "rules/strategy1.smk"
 
 rule all:
     input:
-        expand(RESULTS_DIR + "/hsv-1/multi/" + MULTIFASTA_NAME +"_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb",rank=AF_MODEL_RANK,model=AF_MODEL,msa_depth=MAX_DEPTH_FILENAME)
+        expand(STG_1_RESULTS_DIR + "/hsv-1/multi/" + MULTIFASTA_NAME +"_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb",rank=AF_MODEL_RANK,model=AF_MODEL,msa_depth=MAX_DEPTH_FILENAME)
         # RESULTS_DIR+"/" + MULTIFASTA_NAME + ".a3m"
