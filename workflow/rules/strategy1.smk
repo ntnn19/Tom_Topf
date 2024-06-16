@@ -90,14 +90,15 @@ rule CREATE_DECOY_MAX_DEPTH_PARAM:
         """
 rule RUN_COLABFOLD_BATCH:
     input:
-        MULTIFASTA_ALN_DECOY_OUTPUT
+        MULTIFASTA_ALN_DECOY_OUTPUT,
+        MULTIFASTA_ALN_DECOY_PARAMS
         # a3m_1 =  MULTIFASTA_ALN_DECOY_OUTPUT[0],
         # a3m_2 =  MULTIFASTA_ALN_DECOY_OUTPUT[1],
         # a3m_3 =  MULTIFASTA_ALN_DECOY_OUTPUT[2],
         # a3m_4 =  MULTIFASTA_ALN_DECOY_OUTPUT[3],
         # a3m_5 =  MULTIFASTA_ALN_DECOY_OUTPUT[4]
-    params:
-        MULTIFASTA_ALN_DECOY_PARAMS
+    # params:
+    #     MULTIFASTA_ALN_DECOY_PARAMS
         # d1=MAX_DEPTH[0].replace("_",":"),
         # d2=MAX_DEPTH[1].replace("_",":"),
         # d3=MAX_DEPTH[2].replace("_",":"),
@@ -111,8 +112,8 @@ rule RUN_COLABFOLD_BATCH:
         CONTAINERS_DIR+"/colabfold/colabfold_1.5.5-cuda12.2.2.sif"
     shell:
         """
-        input_files=({input})
-        max_msa_params=({params})
+        input_files=({input[0]})
+        max_msa_params=({input[1]})
         
         for idx in "${{!input_files[@]}}"; do
             input_a3m="${{input_files[$idx]}}"
