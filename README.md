@@ -50,3 +50,18 @@ graph LR;
   
 ```
 
+## INSTRUCTIONS
+
+Clone this repository
+git clone <this_repo>
+
+Install dependecies:
+Snakemake
+click, biopython
+Singularity
+Build the colabfold container
+
+modify the config file as follows:
+containers_dir=/path/to/your/containers_directory
+Run the pipeline:
+./run_workflow
