@@ -103,8 +103,8 @@ rule RUN_COLABFOLD_BATCH:
     shell:
         """
         for i in !{input}; do
-          input_a3m="${input[$i]}"
-          max_msa="${params[$i]}"
+          input_a3m="${{input[${i}]}}"
+          max_msa="${{params[${i}]}}"
           colabfold_batch {input_a3m} /predictions --max-msa {max_msa}
         """
         # done
