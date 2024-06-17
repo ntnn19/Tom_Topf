@@ -65,8 +65,11 @@ graph LR;
 
 ### Pipeline Setup
 #### Mamba (Manual)
-1. `mamba env create -f environment.yml`
-2. **modify the config file as follows:**
+1. This workflow can be easily setup manually with the given environment file. Install Snakemake and dependencies using the command:
+`mamba env create -f environment.yml`
+2. Then activate the newly created environment with:
+`mamba activate hsv-1`
+3. **modify the config file as follows:**
 containers_dir: /path/to/your/containers_directory
-3. Execute the pipeline with:
+4. Execute the pipeline with:
 `./run_workflow.sh`
