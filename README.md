@@ -56,12 +56,20 @@ Clone this repository
 git clone <this_repo>
 
 Install dependecies:
-Snakemake
+[Snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html)
 click, biopython
 Singularity
-Build the colabfold container
+[Build the colabfold Singularity container
+](https://github.com/sokrypton/ColabFold/wiki/Running-ColabFold-in-Docker)
 
-modify the config file as follows:
-containers_dir=/path/to/your/containers_directory
-Run the pipeline:
-./run_workflow
+**Note: The download directory <YOUR_COLABFOLD_CONTAINER_DIR> should not be a subdirectory in this repository directory.**
+
+### Singularity (this will create a `colabfold_1.5.5-cuda12.2.2.sif` file)
+`singularity pull docker://ghcr.io/sokrypton/colabfold:1.5.5-cuda12.2.2`
+
+**modify the config file as follows:**
+containers_dir: /path/to/your/containers_directory
+
+**Run the pipeline:**
+
+`./run_workflow`
