@@ -24,9 +24,10 @@ rule prepare_data:
         expand(DATA_DIR + "/{protein}.fa",protein=QUERY_PROTEINS),
         MULTIFASTA_OUTPUT,
         MULTIFASTA_ALN_OUTPUT,
-        expand(STG_1_RESULTS_DIR +
-               "/hsv-1/multi/" + MULTIFASTA_NAME +
-               "_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb",rank=AF_MODEL_RANK,model=AF_MODEL,msa_depth=MAX_DEPTH_FILENAME)
+        'strategy_1.done.txt',
+        # expand(STG_1_RESULTS_DIR +
+        #        "/hsv-1/multi/" + MULTIFASTA_NAME +
+        #        "_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb",rank=AF_MODEL_RANK,model=AF_MODEL,msa_depth=MAX_DEPTH_FILENAME)
 
 
 rule FETCH_SEQS:
@@ -49,8 +50,8 @@ rule CREATE_MULTISEQ_FASTA:
         MULTIFASTA_OUTPUT
     shell:
         """
-        python "{config[scripts_dir]}/create_multiseq_fasta.py" {input} {output}
-        # python "{config[scripts_dir]}/create_multiseq_fasta_test.py" {input} {output}
+        python "{config[scripts_dir]}/create_multiseq_fasta_test.py" {input} {output}
+        # python "{config[scripts_dir]}/create_multiseq_fasta.py" {input} {output}
         """
 
 
@@ -81,9 +82,10 @@ rule RUN_COLABFOLD_BATCH:
     input:
         MULTIFASTA_ALN_DECOY_OUTPUT,
     output:
-        expand(STG_1_RESULTS_DIR +
-               "/hsv-1/multi/" + MULTIFASTA_NAME +
-               "_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb",rank=AF_MODEL_RANK,model=AF_MODEL,msa_depth=MAX_DEPTH_FILENAME)
+        # expand(STG_1_RESULTS_DIR +
+        #        "/hsv-1/multi/" + MULTIFASTA_NAME +
+        #        "_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb",rank=AF_MODEL_RANK,model=AF_MODEL,msa_depth=MAX_DEPTH_FILENAME),
+        "strategy_1.done.txt"
     container:
         CONTAINERS_DIR + "/colabfold/colabfold_1.5.5-cuda12.2.2.sif"
     shell:
@@ -98,6 +100,7 @@ rule RUN_COLABFOLD_BATCH:
             echo "input_aln=$input_a3m"
             colabfold_batch $input_a3m /predictions --max-msa $max_msa_param
         done
+        touch {output}
         """
 
 

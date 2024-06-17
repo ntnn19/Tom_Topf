@@ -56,7 +56,7 @@ graph LR;
 ### Prerequisits
 
 - Install [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge) (includes mamba)
-
+- Install [Singularity](https://docs.sylabs.io/guides/4.1/user-guide/)
 - Build the [colabfold Singularity container](https://github.com/sokrypton/ColabFold/wiki/Running-ColabFold-in-Docker) by executing the following command:
 `singularity pull docker://ghcr.io/sokrypton/colabfold:1.5.5-cuda12.2.2`
   - This will create a `colabfold_1.5.5-cuda12.2.2.sif` file
