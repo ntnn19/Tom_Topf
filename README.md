@@ -51,25 +51,23 @@ graph LR;
 ```
 
 ## INSTRUCTIONS
+#### Clone this repository
+`git clone https://github.com/ntnn19/Tom_Topf.git`
+### Prerequisits
 
-Clone this repository
-git clone <this_repo>
+- Install [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge) (includes mamba)
 
-Install dependecies:
-[Snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html)
-click, biopython
-Singularity
-[Build the colabfold Singularity container
-](https://github.com/sokrypton/ColabFold/wiki/Running-ColabFold-in-Docker)
-
-**Note: The download directory <YOUR_COLABFOLD_CONTAINER_DIR> should not be a subdirectory in this repository directory.**
-
-### Singularity (this will create a `colabfold_1.5.5-cuda12.2.2.sif` file)
+- Build the [colabfold Singularity container](https://github.com/sokrypton/ColabFold/wiki/Running-ColabFold-in-Docker) by running the following command:
 `singularity pull docker://ghcr.io/sokrypton/colabfold:1.5.5-cuda12.2.2`
+  - this will create a `colabfold_1.5.5-cuda12.2.2.sif` file
 
-**modify the config file as follows:**
+**Note:** The download directory <YOUR_COLABFOLD_CONTAINER_DIR> should not be a subdirectory in this repository directory.
+
+
+### Pipeline Setup
+#### Mamba (Manual)
+1. `mamba env create -f environment.yml`
+2. **modify the config file as follows:**
 containers_dir: /path/to/your/containers_directory
-
-**Run the pipeline:**
-
-`./run_workflow`
+3. Execute the pipeline with:
+`./run_workflow.sh`
