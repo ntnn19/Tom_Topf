@@ -7,4 +7,4 @@ dependencies:
   - snakemake>=8.14.0
   - python>=3.12.3
   - click>=8.1.7
-  - Bio>=1.83
+  - biopython>=1.83
