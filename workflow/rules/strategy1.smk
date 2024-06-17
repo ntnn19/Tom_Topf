@@ -44,13 +44,13 @@ rule FETCH_SEQS:
 
 rule CREATE_MULTISEQ_FASTA:
     input:
-        # expand(DATA_DIR + "/{protein}.fa",protein=QUERY_PROTEINS[0])  # test
-        expand(DATA_DIR+"/{protein}.fa",protein=QUERY_PROTEINS)
+        expand(DATA_DIR + "/{protein}.fa",protein=QUERY_PROTEINS[0])  # test
+        # expand(DATA_DIR+"/{protein}.fa",protein=QUERY_PROTEINS)
     output:
         MULTIFASTA_OUTPUT
     shell:
         """
-        python "{config[scripts_dir]}/create_multiseq_fasta_test.py" {input} {output}
+        python "{config[scripts_dir]}/create_multiseq_fasta_test.py" {input} {output} # test
         # python "{config[scripts_dir]}/create_multiseq_fasta.py" {input} {output}
         """
 
