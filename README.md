@@ -1,4 +1,4 @@
-# Improving the quality AlphaFold predicted protein complex structure by MSA optimization
+# Improving the quality AlphaFold predicted gH/gL/gD complex structure by MSA optimization
 
 ## IMPORTANT: Other parameters also affect the quality of the resulting structures (TBD):
   - Number of recycles
