@@ -74,4 +74,5 @@ containers_dir: /path/to/your/containers_directory
 4. Execute the pipeline with:
 `./run_workflow.sh`
 #### Workflow
+
 ![](dag.png)
