@@ -17,7 +17,7 @@ graph LR;
     gH/gL/gD_multi_sequence_fasta --> id1["colabfold_search
     Default params"] --> colabfold_batch --> Output;
 ```
-#### Strategy #1 - Tom
+#### Tom's Strategy
 ```mermaid
 graph LR;
   id1["`**DB:** Orthoherpesviridae_WGS`"]  --> jackhmmer --> a3m2multi.sh --> colabfold_batch --> Output;
