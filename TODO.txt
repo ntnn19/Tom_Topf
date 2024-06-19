@@ -1,3 +1,2 @@
-Refactor config.yaml such that container dir is passed to run_workflow.sh during run time
-Add env specs file
+Refactor the workflow such that  it works with every path for the container dir is passed to run_workflow.sh during run time
 Modify & Pretify the README.md file

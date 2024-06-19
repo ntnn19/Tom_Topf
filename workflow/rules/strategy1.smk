@@ -44,14 +44,14 @@ rule FETCH_SEQS:
 
 rule CREATE_MULTISEQ_FASTA:
     input:
-        expand(DATA_DIR+"/{protein}.fa",protein=QUERY_PROTEINS)
-        # expand(DATA_DIR + "/{protein}.fa",protein=QUERY_PROTEINS[0])  # test - passed
+        expand(DATA_DIR + "/{protein}.fa",protein=QUERY_PROTEINS[0])  # test - passed
+        # expand(DATA_DIR+"/{protein}.fa",protein=QUERY_PROTEINS)
     output:
         MULTIFASTA_OUTPUT
     shell:
         """
-        python "{config[scripts_dir]}/create_multiseq_fasta.py" {input} {output}
-        # python "{config[scripts_dir]}/create_multiseq_fasta_test.py" {input} {output} # test - passed
+        python "{config[scripts_dir]}/create_multiseq_fasta_test.py" {input} {output} # test - passed
+        # python "{config[scripts_dir]}/create_multiseq_fasta.py" {input} {output}
         """
 
 
@@ -61,7 +61,8 @@ rule RUN_COLABFOLD_SEARCH:
     output:
         MULTIFASTA_ALN_OUTPUT
     container:
-        CONTAINERS_DIR + "/colabfold/colabfold_1.5.5-cuda12.2.2.sif"
+        "docker://ghcr.io/sokrypton/colabfold:1.5.5-cuda12.2.2"
+        #CONTAINERS_DIR + "/colabfold/colabfold_1.5.5-cuda12.2.2.sif"
     shell:
         """
         colabfold_batch {input} /predictions --msa-only
@@ -87,7 +88,8 @@ rule RUN_COLABFOLD_BATCH:
         #        "_{msa_depth}_unrelaxed_rank_{rank}_alphafold2_multimer_v3_model_{model}_seed_000.pdb",rank=AF_MODEL_RANK,model=AF_MODEL,msa_depth=MAX_DEPTH_FILENAME),
         "strategy_1.done.txt"
     container:
-        CONTAINERS_DIR + "/colabfold/colabfold_1.5.5-cuda12.2.2.sif"
+        "docker://ghcr.io/sokrypton/colabfold:1.5.5-cuda12.2.2"
+        # CONTAINERS_DIR + "/colabfold/colabfold_1.5.5-cuda12.2.2.sif"
     shell:
         """
         input_files=({input})
