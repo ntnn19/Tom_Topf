@@ -19,6 +19,8 @@ MULTIFASTA_ALN_OUTPUT = STG_1_RESULTS_DIR + "/" + MULTIFASTA_NAME + ".a3m"
 MULTIFASTA_ALN_DECOY_OUTPUT = [STG_1_RESULTS_DIR + "/" + MULTIFASTA_NAME + "_" + max_depth + ".a3m" for max_depth in
                                MAX_DEPTH_FILENAME]
 
+colabfold_weights_dir= config["colabfold_weights_dir"]
+
 rule prepare_data:
     input:
         expand(DATA_DIR + "/{protein}.fa",protein=QUERY_PROTEINS),
@@ -77,7 +79,15 @@ rule CREATE_DECOY_A3M:
         """
         for dest in {output}; do cp {input} "$dest"; done
         """
-
+rule DOWNLOAD_COLABFOLD_WEIGHTS:
+    output:
+        directory(colabfold_weights_dir+"/colabfold/params")
+    container:
+        "docker://ghcr.io/sokrypton/colabfold:1.5.5-cuda12.2.2"
+    shell:
+        """
+        python -m colabfold.download
+        """
 
 rule RUN_COLABFOLD_BATCH:
     input:
