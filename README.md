@@ -70,7 +70,7 @@ graph LR;
 2. Then activate the newly created environment with:
 `mamba activate hsv-1`
 3. **modify the config file as follows:**
-containers_dir: /path/to/your/containers_directory
+containers_dir: /path/to/your/colabfold_container
 4. Execute the pipeline with:
 `./run_workflow.sh`
 #### Workflow
