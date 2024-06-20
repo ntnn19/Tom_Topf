@@ -112,20 +112,22 @@ rules_dir="${config["rules_dir"]}"
 output_dir="${config["output_dir"]}"
 data_dir="${config["data_dir"]}"
 scripts_dir="${config["scripts_dir"]}"
-strategy_1_outdir=`echp $output_dir | cut -d"," -f1`
+strategy_1_outdir=`echo $output_dir | cut -d"," -f1`
 
 echo "Value for key 'data_dir': $data_dir"
 echo "Value for key 'output_dir': $output_dir"
-
+echo "Value for key 'output_dir': $strategy_1_outdir"
 echo "Preparing mounting directories"
 python "workflow/scripts/create_dirs.py" "config/config.yaml" $colabfold_weights_dir
 if [ $# -eq 0 ]; then
     echo "Error: Creation of mounting directories failed."
     exit 1
 fi
-#snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir="${colabfold_weights_dir}" --use-singularity --singularity-args "--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/workflow/results/strategy-1/hsv-1/multi:/predictions" -c12 -k
 echo "Executing Workflow"
-snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir="${colabfold_weights_dir}" --use-singularity --singularity-args "--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/${strategy_1_outdir}:/predictions" -c12
+cmd="snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir='${colabfold_weights_dir}' --use-singularity --singularity-args '--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/${strategy_1_outdir}:/predictions' -c12"
+echo "$cmd"
+eval $cmd
+#snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir="${colabfold_weights_dir}" --use-singularity --singularity-args "--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/${strategy_1_outdir}:/predictions" -c12
 if [ $# -eq 0 ]; then
     echo "Error: Workflow failed."
     exit 1
