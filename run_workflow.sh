@@ -13,6 +13,11 @@ display_help() {
     echo "Example:"
     echo "  $0 /path/to/colabfold/weights"
 }
+
+if [[ "$1" == "--help" ]]; then
+    display_help
+    exit 0
+fi
 # Test input validity  - colabfold weights dir
 
 # Check if arguments are provided
@@ -116,7 +121,7 @@ python "workflow/scripts/create_dirs.py" "config/config.yaml" $colabfold_weights
 
 #snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir="${colabfold_weights_dir}" --use-singularity --singularity-args "--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/workflow/results/strategy-1/hsv-1/multi:/predictions" -c12 -k
 echo "Executing Workflow"
-snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir="${colabfold_weights_dir}" --use-singularity --singularity-args "--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/${strategy_1_outdir}:/predictions" -c12 -k
+snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir="${colabfold_weights_dir}" --use-singularity --singularity-args "--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/${strategy_1_outdir}:/predictions" -c12 -n
 if [ $# -eq 0 ]; then
     echo "Error: Workflow failed."
     exit 1
