@@ -46,7 +46,7 @@ rule CREATE_MULTISEQ_FASTA:
         MULTIFASTA_OUTPUT
     shell:
         """
-        python "{config[scripts_dir]}/create_multiseq_fasta.py" {input} {output}
+        python "{config[scripts_dir]}/create_multiseq_fasta.p[y" {input} {output}
         # python "{config[scripts_dir]}/create_multiseq_fasta_test.py" {input} {output} # test - passed
         """
 

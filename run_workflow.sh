@@ -50,6 +50,8 @@ fi
 # Create the directory if it does not exist
 if [ ! -e "$colabfold_weights_dir" ]; then
     echo "Directory '$colabfold_weights_dir' does not exist. Creating it..."
+else
+  echo "Directory '$colabfold_weights_dir' exists"
 fi
 
 # Test input validity  - config/config.yaml
@@ -64,10 +66,11 @@ fi
 
 while IFS= read -r line; do
     if ! [[ "$line" =~ ^[^:]+:\ [^:]+$ ]]; then
+        echo $line
         echo "Error: Each key-value pair must be on a separate line and formatted as 'key: value' with a single space after the colon."
         exit 1
     fi
-done
+done < "$configfile"
 
 # Required key-value pairs
 declare -A required_keys
@@ -86,9 +89,11 @@ for key in "${!required_keys[@]}"; do
     fi
     value=$(grep -E "^$key: " "$configfile" | cut -d':' -f2 | xargs)
     # Check if the value is a valid comma-separated string
-    if ! [[ "$value" =~ ^([a-zA-Z0-9_]+,)*[a-zA-Z0-9_]+$ ]]; then
-        echo "Error: Value for key '$key' is not a valid comma-separated string."
-        exit 1
+    if [[ "$key" == "output_dir" ]]; then
+        if ! [[ "$value" =~ ^[^,]+(,[^,]+)*$ ]]; then
+            echo "Error: Value $value for key '$key' is not a valid comma-separated string."
+            exit 1
+        fi
     fi
 done
 
@@ -101,27 +106,26 @@ while IFS=: read -r key value; do
 done < "$configfile"
 
 # Print the parsed config
-echo "Parsed configuration:"
-for key in "${!config[@]}"; do
-    echo "$key: ${config[$key]}"
-done
-
 echo "Config file is valid."
+echo "Parsing config file."
 rules_dir="${config["rules_dir"]}"
 output_dir="${config["output_dir"]}"
 data_dir="${config["data_dir"]}"
 scripts_dir="${config["scripts_dir"]}"
-strategy_1_outdir=`cut -d"," -f1`
-#echo "Value for key 'rules_dir': $rules_dir"
+strategy_1_outdir=`echp $output_dir | cut -d"," -f1`
+
+echo "Value for key 'data_dir': $data_dir"
 echo "Value for key 'output_dir': $output_dir"
-#echo "Value for key 'data_dir': $data_dir"
-#echo "Value for key 'scripts_dir': $scripts_dir"
 
+echo "Preparing mounting directories"
 python "workflow/scripts/create_dirs.py" "config/config.yaml" $colabfold_weights_dir
-
+if [ $# -eq 0 ]; then
+    echo "Error: Creation of mounting directories failed."
+    exit 1
+fi
 #snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir="${colabfold_weights_dir}" --use-singularity --singularity-args "--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/workflow/results/strategy-1/hsv-1/multi:/predictions" -c12 -k
 echo "Executing Workflow"
-snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir="${colabfold_weights_dir}" --use-singularity --singularity-args "--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/${strategy_1_outdir}:/predictions" -c12 -n
+snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir="${colabfold_weights_dir}" --use-singularity --singularity-args "--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/${strategy_1_outdir}:/predictions" -c12
 if [ $# -eq 0 ]; then
     echo "Error: Workflow failed."
     exit 1
