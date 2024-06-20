@@ -8,7 +8,7 @@ PROTEINS = {
 
 DATA_DIR = config["data_dir"]
 STG_1_RESULTS_DIR = config["output_dir"].split(",")[0]
-CONTAINERS_DIR = config["containers_dir"]
+# CONTAINERS_DIR = config["containers_dir"]
 QUERY_PROTEINS = list(PROTEINS.keys())
 MULTIFASTA_NAME = "_".join([p.split("/")[-1] for p in QUERY_PROTEINS])
 MAX_DEPTH_FILENAME = ["16_32", "32_64", "64_128", "256_512", "512_1024"]
