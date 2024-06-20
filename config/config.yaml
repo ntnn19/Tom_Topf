@@ -6,4 +6,5 @@ output_dir: workflow/results/strategy-1/hsv-1/multi,workflow/results/strategy-2/
 data_dir: workflow/data
 scripts_dir: workflow/scripts
 #containers_dir: /home/nnagar/singularity_containers
-colabfold_weights_dir: /home/nnagar/singularity_containers/colabfold/weights
+#colabfold_weights_dir: /home/nnagar/singularity_containers/colabfold/weights
+
