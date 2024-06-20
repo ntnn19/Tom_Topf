@@ -13,6 +13,7 @@ display_help() {
     echo "Example:"
     echo "  $0 /path/to/colabfold/weights"
 }
+# Test input validity  - colabfold weights dir
 
 # Check if arguments are provided
 if [ $# -eq 0 ]; then
@@ -46,6 +47,77 @@ if [ ! -e "$colabfold_weights_dir" ]; then
     echo "Directory '$colabfold_weights_dir' does not exist. Creating it..."
 fi
 
+# Test input validity  - config/config.yaml
+# Assign the first argument to configfile
+configfile="config/config.yaml"
+
+# Check if the config file exists
+if [ ! -f "$configfile" ]; then
+    echo "Error: Config file '$configfile' does not exist."
+    exit 1
+fi
+
+while IFS= read -r line; do
+    if ! [[ "$line" =~ ^[^:]+:\ [^:]+$ ]]; then
+        echo "Error: Each key-value pair must be on a separate line and formatted as 'key: value' with a single space after the colon."
+        exit 1
+    fi
+
+# Required key-value pairs
+declare -A required_keys
+required_keys=(
+    ["rules_dir"]="workflow/rules"
+    ["output_dir"]="workflow/results/strategy-1/hsv-1/multi,workflow/results/strategy-2/hsv-1/multi,workflow/results/strategy-3/hsv-1/multi"
+    ["data_dir"]="workflow/data"
+    ["scripts_dir"]="workflow/scripts"
+)
+
+# Validate that the required key-value pairs exist and have valid comma-separated values
+for key in "${!required_keys[@]}"; do
+    if ! grep -q -E "^$key: " "$configfile"; then
+        echo "Error: Key '$key' does not exist in the config file."
+        exit 1
+    fi
+    value=$(grep -E "^$key: " "$configfile" | cut -d':' -f2 | xargs)
+    # Check if the value is a valid comma-separated string
+    if ! [[ "$value" =~ ^([a-zA-Z0-9_]+,)*[a-zA-Z0-9_]+$ ]]; then
+        echo "Error: Value for key '$key' is not a valid comma-separated string."
+        exit 1
+    fi
+done
+
+# If everything is valid, parse the key-value pairs
+declare -A config
+while IFS=: read -r key value; do
+    key=$(echo "$key" | xargs)     # Trim whitespace
+    value=$(echo "$value" | xargs) # Trim whitespace
+    config["$key"]="$value"
+done < "$configfile"
+
+# Print the parsed config
+echo "Parsed configuration:"
+for key in "${!config[@]}"; do
+    echo "$key: ${config[$key]}"
+done
+
+echo "Config file is valid."
+rules_dir="${config["rules_dir"]}"
+output_dir="${config["output_dir"]}"
+data_dir="${config["data_dir"]}"
+scripts_dir="${config["scripts_dir"]}"
+strategy_1_outdir=`cut -d"," -f1`
+#echo "Value for key 'rules_dir': $rules_dir"
+echo "Value for key 'output_dir': $output_dir"
+#echo "Value for key 'data_dir': $data_dir"
+#echo "Value for key 'scripts_dir': $scripts_dir"
+
 python "workflow/scripts/create_dirs.py" "config/config.yaml" $colabfold_weights_dir
 
-snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir="${colabfold_weights_dir}" --use-singularity --singularity-args "--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/workflow/results/strategy-1/hsv-1/multi:/predictions" -c12 -k
+#snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir="${colabfold_weights_dir}" --use-singularity --singularity-args "--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/workflow/results/strategy-1/hsv-1/multi:/predictions" -c12 -k
+echo "Executing Workflow"
+snakemake --snakefile workflow/Snakefile  --config colabfold_weights_dir="${colabfold_weights_dir}" --use-singularity --singularity-args "--nv -B ${colabfold_weights_dir}:/cache -B $(pwd)/${strategy_1_outdir}:/predictions" -c12 -k
+if [ $# -eq 0 ]; then
+    echo "Error: Workflow failed."
+    exit 1
+fi
+echo "Workflow completed successfully"
