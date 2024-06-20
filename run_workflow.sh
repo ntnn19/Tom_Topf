@@ -62,6 +62,7 @@ while IFS= read -r line; do
         echo "Error: Each key-value pair must be on a separate line and formatted as 'key: value' with a single space after the colon."
         exit 1
     fi
+done
 
 # Required key-value pairs
 declare -A required_keys
