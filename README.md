@@ -57,10 +57,6 @@ graph LR;
 
 - Install [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge) (includes mamba)
 - Install [Singularity](https://docs.sylabs.io/guides/4.1/user-guide/)
-- Build the [colabfold Singularity container](https://github.com/sokrypton/ColabFold/wiki/Running-ColabFold-in-Docker) by executing the following command:
-`singularity pull docker://ghcr.io/sokrypton/colabfold:1.5.5-cuda12.2.2`
-  - This will create a `colabfold_1.5.5-cuda12.2.2.sif` file
-  - **Note:** The download directory <YOUR_CONTAINERS_DIR> should not be a subdirectory in this repository directory.
 
 
 ### Pipeline Setup
@@ -69,9 +65,11 @@ graph LR;
 `mamba env create -f environment.yml`
 2. Then activate the newly created environment with:
 `mamba activate hsv-1`
-3. **modify the config file as follows:**
-containers_dir: /path/to/your/colabfold_container
-4. Execute the pipeline with:
-`./run_workflow.sh`
+3. Execute the pipeline with:
+`./run_workflow.sh <COLABFOLD_WEIGHTS_DIR>`
+E.g.:
+`./run_workflow.sh /path/to/download_dir`
+**Note: The download directory <COLABFOLD_WEIGHTS_DIR> will be created automatically if it does not exist. It should not be a subdirectory in this repository directory.
+Please specify an absolute path** 
 #### Workflow
 ![](dag.png)
