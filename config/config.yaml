@@ -2,4 +2,3 @@ rules_dir: workflow/rules
 output_dir: workflow/results/strategy-1/hsv-1/multi,workflow/results/strategy-2/hsv-1/multi,workflow/results/strategy-3/hsv-1/multi
 data_dir: workflow/data
 scripts_dir: workflow/scripts
-
